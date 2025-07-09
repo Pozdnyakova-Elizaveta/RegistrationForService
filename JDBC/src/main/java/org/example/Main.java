@@ -7,6 +7,7 @@ public class Main {
         final StatusJdbcRepository statusJdbcRepository = new StatusJdbcRepository();
         final SpecializationJdbcRepository specializationJdbcRepository = new SpecializationJdbcRepository();
         final ClientJdbcRepository clientJdbcRepository = new ClientJdbcRepository();
+        final EmployeeJdbcRepository employeeJdbcRepository = new EmployeeJdbcRepository();
         List<String> all = statusJdbcRepository.getAll();
         all.forEach(System.out::println);
         System.out.println(statusJdbcRepository.getId("Выполнено"));
@@ -23,5 +24,15 @@ public class Main {
         client.setLogin("ivan34567");
         clientJdbcRepository.update(client);
         clientJdbcRepository.delete(client.getId());
+        Employee employee = Employee.builder().firstName("Василиса").lastName("Сидорова")
+                .email("vas@mail.ru").password("457425688").login("vasss1254").address("ул Балтийская 50").build();
+        employeeJdbcRepository.create(employee);
+        employee = employeeJdbcRepository.getByLogin("vasss1254");
+        employeeJdbcRepository.auth("lzlskdd", "123");
+        employeeJdbcRepository.auth("vasss1254", "123");
+        employeeJdbcRepository.auth("vasss1254", "457425688");
+        employee.setPassword("gksmgklmsflkmhl");
+        employeeJdbcRepository.update(employee);
+        employeeJdbcRepository.delete(employee.getId());
     }
 }

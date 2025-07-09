@@ -8,8 +8,9 @@ public class ClientJdbcRepository {
         try(Connection connection = AppConstant.ds.getConnection();
             PreparedStatement statement = connection.prepareStatement(query)){
             statement.setInt(1, id);
-            statement.execute();
-            System.out.println("Запись о клиенте удалена");
+            int row = statement.executeUpdate();
+            if (row>0) System.out.println("Запись о клиенте удалена");
+            else System.out.println("Не удалось удалить запись");
         }catch(SQLException e){
             System.out.println("Ошибка SQL - не удалось удалить запись");
         }
@@ -23,8 +24,9 @@ public class ClientJdbcRepository {
             statement.setString(3, client.getEmail());
             statement.setString(4, client.getPassword());
             statement.setString(5, client.getLogin());
-            statement.execute();
-            System.out.println("Запись о клиенте создана");
+            int row = statement.executeUpdate();
+            if (row>0) System.out.println("Запись о клиенте создага");
+            else System.out.println("Не удалось создать запись");
         }catch(SQLException e){
             System.out.println("Ошибка SQL - не удалось создать аккаунт ");
         }
@@ -47,18 +49,12 @@ public class ClientJdbcRepository {
         }
 
     }
-    public void auth(String login, String password){
-        String sql = "SELECT login, password from client where login = ?";
-        try(Connection connection = AppConstant.ds.getConnection();
-        PreparedStatement statement = connection.prepareStatement(sql)){
-            statement.setString(1, login);
-            ResultSet resultSet = statement.executeQuery();
-            if (!resultSet.next()) System.out.println("Логин введен неверно");
-            else if (resultSet.getString("password").equals(password)) System.out.println("Вход успешно выполнен!");
-            else System.out.println("Пароль введен неверно");
-        }catch (SQLException e){
-            System.out.println("Ошибка SQL-запроса");
-        }
+
+    public void auth(String login, String password) {
+        Client client = getByLogin(login);
+        if (client == null) System.out.println("Логин введен неверно");
+        else if (client.getPassword().equals(password)) System.out.println("Вход успешно выполнен!");
+        else System.out.println("Пароль введен неверно");
     }
     public Client getByLogin(String login){
         Client client = null;
