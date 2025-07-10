@@ -30,4 +30,16 @@ public class SpecializationJdbcRepository {
         }
         return 0;
     }
+    public String getName(int id){
+        String query = "SELECT name_specialization from specialization where id_specialization = ?";
+        try(Connection connection = AppConstant.ds.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query)){
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) return resultSet.getString("name_specialization");
+        }catch(SQLException e){
+            System.out.println("Ошибка SQL-запроса");
+        }
+        return null;
+    }
 }

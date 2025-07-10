@@ -1,13 +1,15 @@
 package org.example;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         final StatusJdbcRepository statusJdbcRepository = new StatusJdbcRepository();
         final SpecializationJdbcRepository specializationJdbcRepository = new SpecializationJdbcRepository();
         final ClientJdbcRepository clientJdbcRepository = new ClientJdbcRepository();
         final EmployeeJdbcRepository employeeJdbcRepository = new EmployeeJdbcRepository();
+        final EmployeeSpecializationJdbcRepository employeeSpecializationJdbcRepository = new EmployeeSpecializationJdbcRepository();
         List<String> all = statusJdbcRepository.getAll();
         all.forEach(System.out::println);
         System.out.println(statusJdbcRepository.getId("Выполнено"));
@@ -33,6 +35,10 @@ public class Main {
         employeeJdbcRepository.auth("vasss1254", "457425688");
         employee.setPassword("gksmgklmsflkmhl");
         employeeJdbcRepository.update(employee);
+        employeeSpecializationJdbcRepository.addMultipleSpecializations(employee.getId(), 1, 2);
+        System.out.println(employeeSpecializationJdbcRepository.getEmployeesWithSpecialization(1));
+        System.out.println(employeeSpecializationJdbcRepository.getSpecializationsEmployee(employee.getId()));
+        employeeSpecializationJdbcRepository.deleteSpecialization(employee.getId(), 1);
         employeeJdbcRepository.delete(employee.getId());
     }
 }

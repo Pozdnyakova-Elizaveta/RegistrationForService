@@ -78,4 +78,21 @@ public class EmployeeJdbcRepository {
         }
         return employee;
     }
+    public Employee getById(int id){
+        Employee employee = null;
+        String query = "SELECT * from employee where id_employee = ?";
+        try(Connection connection = AppConstant.ds.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query)){
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) employee=Employee.builder().id(resultSet.getInt("id_employee"))
+                    .firstName(resultSet.getString("first_name")).lastName(resultSet.getString("last_name"))
+                    .email(resultSet.getString("email")).login(resultSet.getString("login"))
+                    .password(resultSet.getString("password"))
+                    .address(resultSet.getString("address")).build();
+        } catch (SQLException e){
+            System.out.println("Ошибка SQL-запроса");
+        }
+        return employee;
+    }
 }
