@@ -1,5 +1,7 @@
 package org.example;
 
+import java.math.BigDecimal;
+import java.time.Duration;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -10,6 +12,7 @@ public class Main {
         final ClientJdbcRepository clientJdbcRepository = new ClientJdbcRepository();
         final EmployeeJdbcRepository employeeJdbcRepository = new EmployeeJdbcRepository();
         final EmployeeSpecializationJdbcRepository employeeSpecializationJdbcRepository = new EmployeeSpecializationJdbcRepository();
+        final ServiceJdbcRepository serviceJdbcRepository = new ServiceJdbcRepository();
         List<String> all = statusJdbcRepository.getAll();
         all.forEach(System.out::println);
         System.out.println(statusJdbcRepository.getId("Выполнено"));
@@ -39,6 +42,14 @@ public class Main {
         System.out.println(employeeSpecializationJdbcRepository.getEmployeesWithSpecialization(1));
         System.out.println(employeeSpecializationJdbcRepository.getSpecializationsEmployee(employee.getId()));
         employeeSpecializationJdbcRepository.deleteSpecialization(employee.getId(), 1);
+        Service service = Service.builder().employeeId(employee.getId()).leadTime(Duration.ofMinutes(90)).nameService("Маникюр однотонный").price(BigDecimal.valueOf(1500)).build();
+        serviceJdbcRepository.create(service);
+        service = serviceJdbcRepository.getByEmployee(employee.getId()).get(0);
+        System.out.println(service.getPrice());
+        service.setPrice(BigDecimal.valueOf(1400));
+        serviceJdbcRepository.update(service);
+        System.out.println(serviceJdbcRepository.getByEmployee(employee.getId()).get(0).getPrice());
+        serviceJdbcRepository.delete(service.getId());
         employeeJdbcRepository.delete(employee.getId());
     }
 }
