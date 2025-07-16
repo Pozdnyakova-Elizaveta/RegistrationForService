@@ -9,5 +9,6 @@
         <property name="hibernate.connection.username">postgres</property>
         <property name="hibernate.connection.password">postgres</property>
         <mapping resource="Client.hbm.xml"/>
+        <mapping resource="Specialization.hbm.xml"/>
     </session-factory>
 </hibernate-configuration>

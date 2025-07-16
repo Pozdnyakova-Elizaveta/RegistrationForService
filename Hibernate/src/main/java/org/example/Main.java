@@ -3,6 +3,9 @@ package org.example;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Main {
     public static SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
     public static void main(String[] args) throws Exception {
@@ -15,5 +18,13 @@ public class Main {
         clientService.update(client);
         clientService.auth(client.getLogin(), "123444444");
         clientService.delete(client.getId());
+        Specialization specialization = Specialization.builder().name("Стилист").build();
+        SpecializationService specializationService = new SpecializationService();
+        specializationService.create(specialization);
+        List<Specialization> list = specializationService.getAll();
+        for (Specialization s: list) System.out.println(s.getName());
+        System.out.println(specializationService.getName(1));
+        System.out.println(specializationService.getId("Стилист"));
+        specializationService.delete(specializationService.getId("Стилист"));
     }
 }
