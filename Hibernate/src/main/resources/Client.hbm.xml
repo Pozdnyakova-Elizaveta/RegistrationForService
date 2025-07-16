@@ -1,0 +1,18 @@
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name = "org.example.Client" table = "client">
+        <meta attribute="class-description">
+            Класс содержит данные о клиентах организаций
+        </meta>
+        <id name="id" type="int" column="id_client">
+            <generator class="identity"/>
+        </id>
+        <property name="firstName" column="first_name" type="string"/>
+        <property name="lastName" column="last_name" type="string"/>
+        <property name="login" column="login" type="string"/>
+        <property name="email" column="email" type="string"/>
+        <property name="password" column="password" type="string"/>
+    </class>
+</hibernate-mapping>
