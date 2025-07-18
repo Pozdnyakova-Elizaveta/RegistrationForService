@@ -10,5 +10,6 @@
         <property name="hibernate.connection.password">postgres</property>
         <mapping resource="Client.hbm.xml"/>
         <mapping resource="Specialization.hbm.xml"/>
+        <mapping resource="Employee.hbm.xml"/>
     </session-factory>
 </hibernate-configuration>
