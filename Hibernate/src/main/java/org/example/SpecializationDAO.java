@@ -6,10 +6,9 @@ import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.hibernate.query.SelectionQuery;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class SpecializationService {
+public class SpecializationDAO {
     public List<Specialization> getAll(){
         String hql = "FROM Specialization";
         Session session = Main.sessionFactory.openSession();
@@ -62,12 +61,9 @@ public class SpecializationService {
             throw new Exception("Специализация по имени не найдена");
         }
     }
-    public String getName(int id) throws Exception {
+    public Specialization getById(int id) throws Exception {
         try (Session session = Main.sessionFactory.openSession()) {
-            String hql = "SELECT name FROM Specialization WHERE id = :id";
-            SelectionQuery<String> query = session.createSelectionQuery(hql, String.class);
-            query.setParameter("id", id);
-            return query.getSingleResult();
+            return session.find(Specialization.class, id);
         } catch (NoResultException e) {
             throw new Exception("Специализация по id не найдена");
         }
