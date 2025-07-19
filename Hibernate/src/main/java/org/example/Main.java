@@ -23,7 +23,7 @@ public class Main {
         for (Specialization s: list) System.out.println(s.getName());
         System.out.println(specializationDAO.getById(1));
         System.out.println(specializationDAO.getId("Стилист"));
-        specializationDAO.delete(specializationDAO.getId("Стилист"));*/
+        specializationDAO.delete(specializationDAO.getId("Стилист"));
         SpecializationDAO specializationDAO = new SpecializationDAO();
         EmployeeDAO employeeDAO = new EmployeeDAO();
         ArrayList<Specialization> specializations = new ArrayList<>();
@@ -41,6 +41,14 @@ public class Main {
         employeeDAO.update(employee);
         employee = employeeDAO.getByLogin(employee.getLogin());
         System.out.println(employee.getSpecializationList().size());
-        employeeDAO.delete(employee.getId());
+        employeeDAO.delete(employee.getId());*/
+        StatusDAO statusDAO = new StatusDAO();
+        Status status = Status.builder().name("Новый").build();
+        statusDAO.create(status);
+        System.out.println(statusDAO.getAll().size());
+        System.out.println(statusDAO.getById(1).getName());
+        int id = statusDAO.getId("Новый");
+        statusDAO.delete(id);
+
     }
 }

@@ -11,5 +11,6 @@
         <mapping resource="Client.hbm.xml"/>
         <mapping resource="Specialization.hbm.xml"/>
         <mapping resource="Employee.hbm.xml"/>
+        <mapping class="org.example.Status"/>
     </session-factory>
 </hibernate-configuration>
