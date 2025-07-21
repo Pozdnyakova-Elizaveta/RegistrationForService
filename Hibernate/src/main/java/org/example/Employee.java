@@ -3,6 +3,8 @@ package org.example;
 import lombok.*;
 
 import java.util.List;
+import java.util.Set;
+
 @Getter
 @Setter
 @Builder
@@ -17,4 +19,5 @@ public class Employee {
     private String password;
     private String address;
     private List<Specialization> specializationList;
+    private List<Service> serviceList;
 }

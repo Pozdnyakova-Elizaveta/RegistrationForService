@@ -2,6 +2,8 @@ package org.example;
 
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Builder
@@ -14,4 +16,5 @@ public class Client {
     private String login;
     private String email;
     private String password;
+    private List<Book> books;
 }

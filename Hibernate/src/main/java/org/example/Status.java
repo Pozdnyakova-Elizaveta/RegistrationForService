@@ -3,6 +3,8 @@ package org.example;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Builder
@@ -17,4 +19,6 @@ public class Status {
     private int id;
     @Column(name = "name_status")
     private String name;
+    @OneToMany(mappedBy = "status")
+    private List<Book> books;
 }
