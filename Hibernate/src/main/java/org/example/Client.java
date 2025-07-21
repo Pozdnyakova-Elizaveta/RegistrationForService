@@ -9,7 +9,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Client {
+public class Client implements BaseEntity{
     private int id;
     private String firstName;
     private String lastName;

@@ -7,53 +7,47 @@ import org.hibernate.query.Query;
 
 import java.util.List;
 
-public class BookDAO {
-    public void create(Book book){
-        Session session = Main.sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
-        try{
-            session.persist(book);
-            transaction.commit();
-            System.out.println("Запись на услугу успешно создана");
-        }catch(Exception e){
-            if (transaction!=null && transaction.isActive()) transaction.rollback();
-        }finally {
-            session.close();
-        }
+public class BookDAO extends BaseDAO<Book>{
+    public BookDAO() {
+        super(Book.class);
     }
-    public void delete(int id) {
-        Session session = Main.sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
-        try{
-            Book book = session.find(Book.class, id);
-            if (book !=null) session.remove(book);
-            transaction.commit();
-            System.out.println("Запись на услугу успешно удалена");
-        }catch(Exception e){
-            if (transaction!=null && transaction.isActive()) transaction.rollback();
-        }finally {
-            session.close();
-        }
-    }
-    public void update(Book book){
-        Session session = Main.sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
-        try{
-            session.merge(book);
-            transaction.commit();
-            System.out.println("Запись на услугу спешно обновлена");
 
-        }catch(Exception e){
-            if (transaction!=null && transaction.isActive()) transaction.rollback();
-        }finally {
-            session.close();
-        }
+    @Override
+    public String getMessageSuccessfulCreation(Book entity) {
+        return "Запись на услугу "+entity.getService().getNameService()+" успешно создана";
     }
-    public List<Book> getAll(){
-        Session session = Main.sessionFactory.openSession();
-        Query<Book> query = session.createQuery("FROM Book", Book.class);
-        List<Book> bookList = query.getResultList();
-        session.close();
-        return bookList;
+
+    @Override
+    public String getMessageFailedCreation(Book entity) {
+        if (entity!=null && entity.getService()!=null && entity.getService().getNameService()!=null)
+            return "Не удалось создать запись на услугу "+entity.getService().getNameService();
+        else return "Не удалось создать запись на услугу";
+    }
+
+    @Override
+    public String getMessageSuccessfulUpdate(Book entity) {
+        return "Запись на услугу "+entity.getService().getNameService()+" успешно обновлена";
+    }
+
+    @Override
+    public String getMessageFailedUpdate(Book entity) {
+        if (entity!=null && entity.getService()!=null && entity.getService().getNameService()!=null)
+            return "Не удалось обновить запись на услугу "+entity.getService().getNameService();
+        else return "Не удалось обновить запись на услугу";
+    }
+
+    @Override
+    public String getMessageSuccessfulDelete(int id) {
+        return "Запись на услугу id="+id+" успешно удалена";
+    }
+
+    @Override
+    public String getMessageFailedDelete(int id) {
+        return "Не удалось удалить запись на услугу с id="+id;
+    }
+
+    @Override
+    public String getMessageFailedGetById(int id) {
+        return "Не удалось получить запись на услугу по id="+id;
     }
 }

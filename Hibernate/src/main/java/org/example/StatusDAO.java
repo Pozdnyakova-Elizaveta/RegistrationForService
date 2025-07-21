@@ -8,42 +8,46 @@ import org.hibernate.query.SelectionQuery;
 
 import java.util.List;
 
-public class StatusDAO{
-    public List<Status> getAll(){
-        Session session = Main.sessionFactory.openSession();
-        Query<Status> query = session.createQuery("FROM Status", Status.class);
-        List<Status> statusList = query.getResultList();
-        session.close();
-        return statusList;
+public class StatusDAO extends BaseDAO<Status>{
+    public StatusDAO() {
+        super(Status.class);
     }
-    public void create(Status status){
-        Session session = Main.sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
-        try{
-            session.persist(status);
-            transaction.commit();
-            System.out.println("Статус успешно создан");
-        } catch (Exception e){
-            if (transaction!=null && transaction.isActive()) transaction.rollback();
-            System.out.println(e.getMessage());
-        } finally {
-            session.close();
-        }
+
+    @Override
+    public String getMessageSuccessfulCreation(Status entity) {
+        return "Статус "+entity.getName()+" успешно создан";
     }
-    public void delete(int id){
-        Session session = Main.sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
-        try{
-            Status status = session.find(Status.class, id);
-            if (status!=null) session.remove(status);
-            transaction.commit();
-            System.out.println("Статус успешно удален");
-        } catch (Exception e){
-            if (transaction!=null && transaction.isActive()) transaction.rollback();
-            System.out.println(e.getMessage());
-        } finally {
-            session.close();
-        }
+
+    @Override
+    public String getMessageFailedCreation(Status entity) {
+        if (entity!=null && entity.getName()!=null) return "Не удалось создать статус "+entity.getName();
+        else return "Не удалось создать статус";
+    }
+
+    @Override
+    public String getMessageSuccessfulUpdate(Status entity) {
+        return "Статус "+entity.getName()+" успешно обновлен";
+    }
+
+    @Override
+    public String getMessageFailedUpdate(Status entity) {
+        if (entity!=null && entity.getName()!=null) return "Не удалось обновить статус "+entity.getName();
+        else return "Не удалось обновить статус";
+    }
+
+    @Override
+    public String getMessageSuccessfulDelete(int id) {
+        return "Статус id="+id+" успешно удален";
+    }
+
+    @Override
+    public String getMessageFailedDelete(int id) {
+        return "Не удалось удалить статус id="+id;
+    }
+
+    @Override
+    public String getMessageFailedGetById(int id) {
+        return "Не удалось получить статус по id="+id;
     }
     public int getId(String name) throws Exception {
         String hql = "SELECT id from Status where name = :name";
@@ -54,15 +58,7 @@ public class StatusDAO{
             session.close();
             return id;
         }catch (NoResultException e){
-            throw new Exception("Статус по имени не найден");
-        }
-    }
-    public Status getById(int id) throws Exception {
-        try(Session session = Main.sessionFactory.openSession()) {
-            Status status = session.find(Status.class, id);
-            return status;
-        }catch (NoResultException e){
-            throw new Exception("Статус по id не найден");
+            throw new Exception("Статус по названию "+name+" не найден");
         }
     }
 }

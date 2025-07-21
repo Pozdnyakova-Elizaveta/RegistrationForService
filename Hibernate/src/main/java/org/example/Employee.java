@@ -10,7 +10,7 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Employee {
+public class Employee implements BaseEntity{
     private int id;
     private String firstName;
     private String lastName;

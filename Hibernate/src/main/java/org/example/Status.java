@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "status")
-public class Status {
+public class Status implements BaseEntity{
     @Id
     @Column(name = "id_status")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

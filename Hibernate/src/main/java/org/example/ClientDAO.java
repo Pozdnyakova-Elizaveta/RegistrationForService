@@ -7,53 +7,46 @@ import org.hibernate.query.SelectionQuery;
 
 import java.nio.channels.NonReadableChannelException;
 
-public class ClientDAO {
-    public void delete(int id){
-        Session session = Main.sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
-        try{
-            Client client = session.find(Client.class, id);
-            if (client!=null) session.remove(client);
-            transaction.commit();
-            System.out.println("Клиент успешно удален");
-        } catch (Exception e){
-            if (transaction != null && transaction.isActive()) {
-                transaction.rollback();
-            }
-        } finally {
-            session.close();
-        }
+public class ClientDAO extends BaseDAO<Client>{
+    public ClientDAO() {
+        super(Client.class);
+    }
 
+    @Override
+    public String getMessageSuccessfulCreation(Client entity) {
+        return "Клиент "+entity.getLogin()+" успешно создан";
     }
-    public void create(Client client){
-        Session session = Main.sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
-        try {
-            session.persist(client);
-            transaction.commit();
-            System.out.println("Клиент успешно создан");
-        }
-        catch(Exception e){
-            if (transaction != null && transaction.isActive()) transaction.rollback();
-        }
-        finally {
-            session.close();
-        }
+
+    @Override
+    public String getMessageFailedCreation(Client entity) {
+        if (entity!=null && entity.getLogin()!=null) return "Не удалось создать клиента "+entity.getLogin();
+        else return "Не удалось создать клиента";
     }
-    public void update(Client client){
-        Session session = Main.sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
-        try {
-            session.merge(client);
-            transaction.commit();
-            System.out.println("Клиент успешно обновлен");
-        }catch (Exception e){
-            if (transaction != null && transaction.isActive()) {
-                transaction.rollback();
-            }
-        } finally {
-            session.close();
-        }
+
+    @Override
+    public String getMessageSuccessfulUpdate(Client entity) {
+        return "Клиент "+entity.getLogin()+" успешно обновлен";
+    }
+
+    @Override
+    public String getMessageFailedUpdate(Client entity) {
+        if (entity!=null && entity.getLogin()!=null) return "Не удалось обновить клиента "+entity.getLogin();
+        else return "Не удалось обновить клиента";
+    }
+
+    @Override
+    public String getMessageSuccessfulDelete(int id) {
+        return "Клиент id="+id+" успешно удален";
+    }
+
+    @Override
+    public String getMessageFailedDelete(int id) {
+        return "Не удалось удалить клиента с id="+id;
+    }
+
+    @Override
+    public String getMessageFailedGetById(int id) {
+        return "Не удалось получить клиента по id="+id;
     }
     public Client getByLogin(String login) throws Exception {
         String hql = "FROM Client WHERE login = :login";
@@ -64,7 +57,7 @@ public class ClientDAO {
             session.close();
             return client;
         } catch (NoResultException e) {
-            throw new Exception("Клиент по логину не найден");
+            throw new Exception("Клиент по логину "+login+" не найден");
         }
     }
 

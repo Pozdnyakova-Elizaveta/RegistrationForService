@@ -3,53 +3,50 @@ package org.example;
 import jakarta.persistence.NoResultException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.query.Query;
 import org.hibernate.query.SelectionQuery;
 
-import java.util.List;
 
-public class SpecializationDAO {
-    public List<Specialization> getAll(){
-        String hql = "FROM Specialization";
-        Session session = Main.sessionFactory.openSession();
-        Query<Specialization> query = session.createQuery(hql, Specialization.class);
-        List<Specialization> specializations = query.getResultList();
-        session.close();
-        return specializations;
+public class SpecializationDAO extends BaseDAO<Specialization>{
+
+    public SpecializationDAO() {
+        super(Specialization.class);
     }
-    public void create(Specialization specialization){
-        Session session = Main.sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
-        try {
-            session.persist(specialization);
-            transaction.commit();
-            System.out.println("Специализация добавлена");
-        } catch(Exception e){
-            if (transaction != null && transaction.isActive()) transaction.rollback();
-        }
-        finally {
-            session.close();
-        }
+
+    @Override
+    public String getMessageSuccessfulCreation(Specialization entity) {
+        return "Специализация "+entity.getName()+" успешно создана";
     }
-    public void delete(int id){
-        Session session = Main.sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
-        try {
-            Specialization specialization = session.find(Specialization.class, id);
-            if (specialization != null) {
-                session.remove(specialization);
-                transaction.commit();
-                System.out.println("Специализация успешно удалена");
-            }
-            else throw new IllegalArgumentException("Специализация с ID " + id + " не найдена");
-        } catch (IllegalArgumentException e){
-            if (transaction != null && transaction.isActive()) transaction.rollback();
-            throw e;
-        } catch (Exception e){
-            if (transaction != null && transaction.isActive()) transaction.rollback();
-        } finally {
-            session.close();
-        }
+
+    @Override
+    public String getMessageFailedCreation(Specialization entity) {
+        if (entity!=null && entity.getName()!=null) return "Не удалось создать специализацию "+entity.getName();
+        else return "Не удалось создать специализацию";
+    }
+
+    @Override
+    public String getMessageSuccessfulUpdate(Specialization entity) {
+        return "Специализация "+entity.getName()+" успешно обновлена";
+    }
+
+    @Override
+    public String getMessageFailedUpdate(Specialization entity) {
+        if (entity!=null && entity.getName()!=null) return "Не удалось обновить специализацию "+entity.getName();
+        else return "Не удалось обновить специализацию";
+    }
+
+    @Override
+    public String getMessageSuccessfulDelete(int id) {
+        return "Специализация id="+id+" успешно удалена";
+    }
+
+    @Override
+    public String getMessageFailedDelete(int id) {
+        return "Не удалось удалить специализацию с id="+id;
+    }
+
+    @Override
+    public String getMessageFailedGetById(int id) {
+        return "Не удалось получить специализацию по id="+id;
     }
     public int getId(String name) throws Exception {
         try (Session session = Main.sessionFactory.openSession()) {
@@ -58,15 +55,7 @@ public class SpecializationDAO {
             query.setParameter("name", name);
             return query.getSingleResult();
         } catch (NoResultException e) {
-            throw new Exception("Специализация по имени не найдена");
+            throw new Exception("Специализация по названию "+name+" не найдена");
         }
-    }
-    public Specialization getById(int id) throws Exception {
-        try (Session session = Main.sessionFactory.openSession()) {
-            return session.find(Specialization.class, id);
-        } catch (NoResultException e) {
-            throw new Exception("Специализация по id не найдена");
-        }
-
     }
 }

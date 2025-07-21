@@ -6,59 +6,45 @@ import org.hibernate.query.Query;
 
 import java.util.List;
 
-public class ServiceDAO {
-    public void create(Service service){
-        Session session = Main.sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
-        try{
-            session.persist(service);
-            transaction.commit();
-            System.out.println("Услуга успешно создана");
-        }catch (Exception e){
-            if (transaction!=null && transaction.isActive()){
-                transaction.rollback();
-            }
-        } finally {
-            session.close();
-        }
+public class ServiceDAO extends BaseDAO<Service>{
+    public ServiceDAO() {
+        super(Service.class);
     }
 
-    public void delete(int id) {
-        Session session = Main.sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
-        try {
-            Service service = session.find(Service.class, id);
-            if (service!=null) session.remove(service);
-            transaction.commit();
-            System.out.println("Сервис успешно удален");
-        } catch (Exception e) {
-            if (transaction != null && transaction.isActive()) {
-                transaction.rollback();
-            }
-        } finally {
-            session.close();
-        }
+    @Override
+    public String getMessageSuccessfulCreation(Service entity) {
+        return "Услуга "+entity.getNameService()+" успешно создана";
     }
-    public void update(Service service){
-        Session session = Main.sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
-        try {
-            session.merge(service);
-            transaction.commit();
-            System.out.println("Услуга обновлена");
-        } catch (Exception e){
-            if (transaction!=null && transaction.isActive()){
-                transaction.rollback();
-            }
-        } finally {
-            session.close();
-        }
+
+    @Override
+    public String getMessageFailedCreation(Service entity) {
+        if (entity!=null && entity.getNameService()!=null) return "Не удалось создать услугу "+entity.getNameService();
+        else return "Не удалось создать услугу";
     }
-    public List<Service> getAll(){
-        Session session = Main.sessionFactory.openSession();
-        Query<Service> query = session.createQuery("FROM Service", Service.class);
-        List<Service> serviceList = query.getResultList();
-        session.close();
-        return serviceList;
+
+    @Override
+    public String getMessageSuccessfulUpdate(Service entity) {
+        return "Услуга "+entity.getNameService()+" успешно обновлена";
+    }
+
+    @Override
+    public String getMessageFailedUpdate(Service entity) {
+        if (entity!=null && entity.getNameService()!=null) return "Не удалось обновить услугу "+entity.getNameService();
+        else return "Не удалось обновить услугу";
+    }
+
+    @Override
+    public String getMessageSuccessfulDelete(int id) {
+        return "Услуга id="+id+" успешно удалена";
+    }
+
+    @Override
+    public String getMessageFailedDelete(int id) {
+        return "Не удалось удалить услугу с id="+id;
+    }
+
+    @Override
+    public String getMessageFailedGetById(int id) {
+        return "Не удалось получить услугу по id="+id;
     }
 }

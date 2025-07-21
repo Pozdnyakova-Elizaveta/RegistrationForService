@@ -7,7 +7,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Specialization {
+public class Specialization implements BaseEntity{
     private int id;
     private String name;
 }

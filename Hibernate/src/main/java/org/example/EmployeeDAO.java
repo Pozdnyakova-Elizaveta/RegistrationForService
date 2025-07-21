@@ -5,53 +5,47 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.SelectionQuery;
 
-public class EmployeeDAO {
-    public void delete(int id){
-        Session session = Main.sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
-        try{
-            Employee employee = session.find(Employee.class, id);
-            if (employee!=null) session.remove(employee);
-            transaction.commit();
-            System.out.println("Сотрудник удален");
+public class EmployeeDAO extends BaseDAO<Employee>{
 
-        } catch (Exception e){
-            if (transaction!=null && transaction.isActive()) transaction.rollback();
-        }
-        finally {
-            session.close();
-        }
+    public EmployeeDAO() {
+        super(Employee.class);
     }
-    public void create(Employee employee){
-        Session session = Main.sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
-        try{
-            session.persist(employee);
-            transaction.commit();
-            System.out.println("Сотрудник успешно создан");
-        }catch (Exception e){
-            if (transaction!=null && transaction.isActive()) transaction.rollback();
-            System.out.println(e.getMessage());
-        }
-        finally {
-            session.close();
-        }
-    }
-    public void update(Employee employee){
-        Session session = Main.sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
-        try{
-            session.merge(employee);
-            transaction.commit();
-            System.out.println("Сотрудник успешно обновлен");
 
-        }catch (Exception e){
-            if (transaction!=null && transaction.isActive()) transaction.rollback();
-            System.out.println(e.getMessage());
-        }
-        finally {
-            session.close();
-        }
+    @Override
+    public String getMessageSuccessfulCreation(Employee entity) {
+        return "Сотрудник "+entity.getLogin()+" успешно создан";
+    }
+
+    @Override
+    public String getMessageFailedCreation(Employee entity) {
+        if (entity!=null && entity.getLogin()!=null) return "Не удалось создать сотрудника "+entity.getLogin();
+        else return "Не удалось создать сотрудника";
+    }
+
+    @Override
+    public String getMessageSuccessfulUpdate(Employee entity) {
+        return "Сотрудник "+entity.getLogin()+" успешно обновлен";
+    }
+
+    @Override
+    public String getMessageFailedUpdate(Employee entity) {
+        if (entity!=null && entity.getLogin()!=null) return "Не удалось обновить сотрудника "+entity.getLogin();
+        else return "Не удалось обновить сотрудника";
+    }
+
+    @Override
+    public String getMessageSuccessfulDelete(int id) {
+        return "Сотрудник id="+id+" успешно удален";
+    }
+
+    @Override
+    public String getMessageFailedDelete(int id) {
+        return "Не удалось удалить сотрудника с id="+id;
+    }
+
+    @Override
+    public String getMessageFailedGetById(int id) {
+        return "Не удалось получить сотрудника по id="+id;
     }
     public Employee getByLogin(String login) throws Exception {
         try (Session session = Main.sessionFactory.openSession();){
@@ -62,16 +56,7 @@ public class EmployeeDAO {
             session.close();
             return employee;
         }catch (NoResultException e){
-            throw new Exception("Сотрудник по логину не найден");
-        }
-    }
-    public Employee getById(int id) throws Exception {
-        try (Session session = Main.sessionFactory.openSession();){
-            Employee employee = session.find(Employee.class, id);
-            session.close();
-            return employee;
-        }catch (NoResultException e){
-            throw new Exception("Сотрудник по id не найден");
+            throw new Exception("Сотрудник по логину "+login+" не найден");
         }
     }
 }
